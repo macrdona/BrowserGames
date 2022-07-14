@@ -2,58 +2,51 @@ function ComputerPlay(map){
     return map.get(Math.floor(Math.random() * 3) +1);
 }
 
+function ConfigureElements(p, button, string){
+    p.textContent = string;
+    p.style.cssText = "color: white;"
+
+    button.innerHTML = "Re-start game";
+    button.style.cssText = "color: red;"
+
+    const element = document.getElementsByClassName("container3");
+    element[0].appendChild(p);
+    element[0].appendChild(button);
+
+    
+    button.onclick = function(){
+        element[0].removeChild(p);
+        element[0].removeChild(button);
+    }
+}
+
 function Game(computerSelect, playerSelect){
+    const p = document.createElement("p");
+    const button = document.createElement("button")
+    let string = "RESULTS\n";
 
     if(computerSelect === playerSelect){
-        console.log(`Computer selected: ${computerSelect}\n` 
+        string += `Computer selected: ${computerSelect}\n` 
         + `Player selected: ${playerSelect}\n` 
-        + "Game is tied"
-        );
-        return 0;
+        + "Game is tied";
     }
     else if((computerSelect === "rock" && playerSelect === "scissors")
         || (computerSelect === "scissors" && playerSelect === "paper")
         || (computerSelect === "paper" && playerSelect === "rock")){
 
-        console.log(`Computer selected: ${computerSelect}\n` 
+        string += `Computer selected: ${computerSelect}\n` 
         + `Player selected: ${playerSelect}\n` 
-        + "Computer Wins"
-        );
-        return 1;
+        + "Computer Wins";
+        button.classList.add("resultsLose");
     }
     else{
-        console.log(`Computer selected: ${computerSelect}\n` 
+        string += `Computer selected: ${computerSelect}\n` 
         + `Player selected: ${playerSelect}\n` 
-        + "Player Wins"
-        );
-        return 2;
-    }
-}
-
-function MultipleGames(map, playerSelect){
-    let playerWins = 0;
-    let computerWins = 0;
-    for(let i = 0; i < 5; i++){
-        let wins = Game(ComputerPlay(map), playerSelect);
-
-        if(wins == 1){
-            computerWins += 1;
-        }
-        else if(wins == 2){
-            playerWins += 1;
-        }
+        + "Player Wins";
+        button.classList.add("resultsWin");
     }
 
-    console.log(`Player won ${playerWins} times, Computer won ${computerWins}`);
-    if(computerWins > playerWins){
-        console.log("Computer Wins");
-    }
-    else if(playerWins > computerWins){
-        console.log("Player wins");
-    }
-    else{
-        console.log("Game is tied");
-    }
+    ConfigureElements(p, button, string);
 }
 
 //MAIN
@@ -64,17 +57,18 @@ map.set(3, "scissors");
 
 let playerSelect = "";
 
-while(true){
-    console.log("Initializing new game");
-    playerSelect = prompt("Enter Paper, Rock, Scissors: ");
+const buttons = document.querySelectorAll("button");
 
-    if(playerSelect.toLowerCase() === "rock" || playerSelect.toLowerCase() === "paper" || playerSelect.toLowerCase() === "scissors"){
-        break;
-    }
-    console.log("Error: Input must be Paper, Rock or Scissors");
-}
+buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+        console.log("Initializing new game");
+        playerSelect = button.id;
+        playerSelect = playerSelect.toLowerCase();
+        Game(ComputerPlay(map), playerSelect);
 
-playerSelect = playerSelect.toLowerCase();
-MultipleGames(map, playerSelect);
+    });
+});
+
+
 
     
